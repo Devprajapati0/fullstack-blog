@@ -5,17 +5,26 @@ import { User } from "../model/user.model.js";
 import { Post } from "../model/post.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import mongoose from "mongoose";
-
+ 
 const createPost = asynhandler(async(req, res) => {
     try {
          const { title, content, isActive = false } = req.body;
     
-         if ([title, content, isActive].some((field) => !field.trim())) {
-            throw new apiError(400, "Title, content, and isActive must be provided");
+         if (!(title || content || isActive)) {
+            throw new apiError(400, "either Title, content, and isActive is not been provided");
          }
-
-         const url = await req.file?.path;
-         console.log("url", url);
+         console.log(req.file);
+         const url = await req.file?.path; 
+         console.log("url", url); 
+         if(!url){
+            return res.json(
+                new apiResponse(
+                    200,
+                    null,
+                    "file is required"
+                )
+            )
+         }
 
          const fileUploaded =  await uploadOnCloudinary(url);
          if (!fileUploaded) {
@@ -51,6 +60,7 @@ const createPost = asynhandler(async(req, res) => {
          return res.status(200).json(new apiResponse(200, post, "Post created successfully"));
     } catch (error) {
         throw error;
+        res.status(400).json({ success: false, error: error.message });
     }
 });
 
@@ -162,7 +172,7 @@ const createPost = asynhandler(async(req, res) => {
 
     if(!postFound){
         throw new apiError(400,"error while finding the post")
-    }
+    } 
 
     return res.status(200).json(
         new apiResponse(
@@ -173,12 +183,25 @@ const createPost = asynhandler(async(req, res) => {
     )
 
   })
-
+ 
   const allPostOfAllUsers = asynhandler(async (req,res)=> {
    const data = await Post.aggregate([
         {
             $match:{
                 isActive: true
+            }
+        },
+        {
+            $lookup:{ 
+                from:"users",
+                localField:"owner",
+                foreignField:"_id",
+                as:"owner"
+            }
+        } ,
+        {
+            $addFields:{
+                username:"$owner.username"
             }
         }
     ])
@@ -197,9 +220,8 @@ const createPost = asynhandler(async(req, res) => {
   })
   
   const getAllPosts = asynhandler(async (req, res) => {
-    try {
-        console.log("User ID:", req.user._id); // Log the user ID
-        const data = await Post.find({ owner: req.user._id });
+    try { // Log the user ID
+        const data = await Post.find({ isActive: true });
 
         console.log("Posts found:", data); // Log the posts found
 

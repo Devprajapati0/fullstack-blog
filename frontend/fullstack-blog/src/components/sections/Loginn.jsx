@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
  import {useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { login } from '../store/authSlice'
+import "../loader.css"
 
 function Loginn() {
     const [errors,setError] = useState('')
@@ -62,12 +63,12 @@ const submitlogin = (e) => {
   }
 
     
-  return (
+  return !loading ? (
     <>
-     <div>
+     <div  className='flex items-center justify-center w-full'>
 
-<div>
-<p>
+<div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
+<p  className="mt-2 text-center text-base text-black/60">
 Don&apos;t have any account?&nbsp;
                         <Link
                             to="/signup"
@@ -78,13 +79,11 @@ Don&apos;t have any account?&nbsp;
 </p>
 </div> 
 {errors &&
-<p aria-live='assertive' >{errors}</p>}
-{
-   loading && <h3>Loading.....</h3>
-}
+<p>{errors}</p>}
+
 <div>
-<form action="" onSubmit={submitlogin}>
-   <label htmlFor="email">Email:</label>
+<form action="" onSubmit={submitlogin} className='mt-8'>
+    <label htmlFor="email">Email:</label>
    <input type="text" id='email' name='email' onChange={handleDetails} value={data.email} placeholder='enter the emial'/>
    <br />
    <label htmlFor="pass">password:</label>
@@ -95,7 +94,7 @@ Don&apos;t have any account?&nbsp;
 </div>
 </div>
     </>
-  )
+  ): <div className='spinner' ></div>
 }
 
 export default Loginn

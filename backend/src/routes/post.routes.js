@@ -12,15 +12,12 @@ const router = Router()
 
 router.get('/',allPostOfAllUsers)
 
+
 router.use(jwtverify)
-
-
-
 router.post('/createpost', upload.single('featuredImage'), createPost);
 router.patch('/editpost/:postId', upload.single('featuredImage'), editPost);
 router.delete('/deletepost/:postId', deletePost);
 router.get('/getallpost', getAllPosts); // Removed the route parameter from here
-router.get('/:postId', getPost);
-
-
+router.get('/getpost/:postId', getPost);
+ 
 export default router   

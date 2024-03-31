@@ -3,6 +3,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import "../loader.css"
 
  function Signupp() {
   const [data,setData] = useState({
@@ -60,12 +61,12 @@ import { useNavigate } from 'react-router-dom'
 
 
 
-  return (
+  return !loading ?(
     <>
-    <div>
+    <div className="flex items-center justify-center">
 
-         <div>
-        <p>
+         <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
+        <p className="mt-2 text-center text-base text-black/60">
         Already have an account?&nbsp;
             <Link
                 to="/login"
@@ -76,7 +77,7 @@ import { useNavigate } from 'react-router-dom'
         </p>
         </div> 
         {errorq &&
-         <p aria-live='assertive' >{errorq}</p>}
+         <p>{errorq}</p>}
          {
             loading && <h3>Loading.....</h3>
          }
@@ -96,7 +97,7 @@ import { useNavigate } from 'react-router-dom'
         </div>
     </div>
     </>
-  )
+  ) :<div className='spinner' ></div>
 }
 
 export default Signupp

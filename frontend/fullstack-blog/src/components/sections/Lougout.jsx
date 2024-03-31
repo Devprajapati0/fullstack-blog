@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { logout } from '../store/authSlice'
+import "../loader.css"
 
 function Lougout() {
     const [loading,setloading] = useState(false)
@@ -36,17 +37,14 @@ function Lougout() {
           setloading(false)
           }
    }
-  return (
+  return !loading ? (
     <>
     <div>{errors &&
 <p aria-live='assertive' >{errors}</p>}
-{
-   loading && <h3>Loading.....</h3>
-}
-        <button onClick={logoutuser} >Logout</button>
+        <button onClick={logoutuser}  className='inline-bock px-6 py-2 duration-200 hover:bg-blue-100 rounded-full' >Logout</button>
     </div>
     </>
-  )
+  ):  <div className='spinner' ></div>
 }
 
 export default Lougout

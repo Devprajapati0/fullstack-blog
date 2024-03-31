@@ -1,157 +1,103 @@
-import { useState } from "react"
-import Persist from "../persistent/Persist"
+import { useState } from "react";
+import Persist from "../persistent/Persist";
+import RTE from "../sections/RTE";
+import { useNavigate } from "react-router-dom";
+import "../loader.css" 
 
-function Postfom() {
-  /*const [data,setData] = useState({
-    username:"",
-    email:"",
-    password:""
-  })
-
-  const [loading,setloading] = useState(false)
-  const [errorq,setError] = useState('')
+function PostForm() {
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [post, setPost] = useState({
+    title: '',
+    content: '',
+    featuredImage: null,
+    isActive: false
+  });
   const navigate = useNavigate()
 
-  const register = async() => {
- try {
-    setError("")
-    setloading(true)
-      const response =  await axios.post('/api/v1/users/signup',data,{
-           withCredentials:true,
-       })
-       setError(response.data.message)
-       console.log(response.data);
-       setloading(false)
-       navigate('/')
-       
- } catch (error) {
-    console.log(error);
-    if(!error?.response){
-        setError('no serve response');
+  const api = Persist();
 
-       }else if(error.response?.status === 400){
-       setError('missing usernmae or password');}
-       else if(error.response?.status === 401){
-        setError('unauthorized user');}
-        else{
-        setError('Signupfailed');}
-        setloading(false)
-        }
- }
-  
-
-  const submitregister = (e) => {
-    e.preventDefault()
-    register()
-   
-  }
-
-  const handleDetails = (e) => {
-    setData({
-        ...data,
-        [e.target.name]: e.target.value
-    })
-  }*/
-  /*
-          <p ref={errref} className={errmsg ? "Errmsg" : "offscreen"} aria-live='assertive' >{errmsg}</p>
-        <h1>Sign in</h1>
-        <form action="" onSubmit={submit}>
-      <h3>Email:</h3>
-      <input type="text" ref={userref} required name='email' value={data.email} onChange={handlechnage}/>
-      <h3>Password:</h3>
-      <input type="password" ref={userref} required name='password' value={data.password} onChange={handlechnage}/>
-      <br/><input type="checkbox" name="" id="" onChange={togglepersist} checked={persist} />Remeber me:<br/>
-      <button type='submit' > submit</button>
-    </form>
-    <button onClick={logout}>Logout</button>
-
-
-    
-  const registered = async()=>{
-    setError(false);
+  const createPost = async () => {
     try {
-      const response = await axios.post('/api/v1/users/register',register,{
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        withCredentials:true})
-    setLoading(false)
-        setRegister(response.data)
-        console.log(response.data);
+      setError('');
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('title', post.title);
+      formData.append('content', post.content);
+      formData.append('featuredImage', post.featuredImage); // Append the file
+      formData.append('isActive', post.isActive);
+      console.log(formData);
+      
+      const response = await api.post('/v1/posts/createpost', formData, {
+        withCredentials: true,
+      });
+      console.log(response.data.data._id);
+      setError(response.data.message);
+      setLoading(false);
+      navigate(`/Post/${response.data.data._id}`)
+
     } catch (error) {
-      setError(true);
-      setLoading(true)
-      console.log(error.message);
+      console.error(error);
+      if (!error.response) {
+        setError('No server response');
+      } else if (error.response.status === 400) {
+        setError('Missing post credentials');
+      } else if (error.response.status === 401) {
+        setError('Unauthorized user');
+      } else {
+        setError('Post creation failed');
+      }
+      setLoading(false);
     }
-  }
+  };
 
-  const handlechange = (e)=>{
-    setRegister({
-      ...register,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  const handlefilechange = (e,feildname)=>{
-    const file = e.target.files[0];
-    setRegister((prev)=>({
-      ...prev,
-      [feildname]:file,}))
-    
-  }
-
-  const submitregister=async(e)=>{
+  const handleSubmit = (e) => { 
     e.preventDefault();
-    registered()
-  }*/
+    createPost();
+  };
+                                                                                                                                                                       
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+    setPost(prevPost => ({
+      ...prevPost,
+      [name]: type === 'checkbox' ? e.target.checked : value
+    }));
+  };
 
-  const [errorr,setError] = useState('')
-  const [loading,setloading] = useState(false)
-  const [post,setpost] = useState({
-    title:'',
-    content:'',
-    featuredImage:null,
-    isActive:false
-  })
-  const api = Persist()
-  const createpsot = async() => {
-   try {
-    setError('')
-    setloading(true)
-    const response=  await api.post('/v1/posts/createpost',post,{
-       withCredentials:true
-     })
-     console.log(response.data);
-     setError(response.data.data.message)
-     setloading(false)
-   } catch (error) {
-    console.log(error);
-    if(!error?.response){
-        setError('no serve response');
-       }else if(error.response?.status === 400){
-       setError('missing post credentials');}
-       else if(error.response?.status === 401){
-        setError('unauthorized user');}
-        else{
-        setError('Post creation failed');}
-        setloading(false)
-        }
-   }
-  return (
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setPost(prevPost => ({
+      ...prevPost,
+      featuredImage: file
+    }));
+  };
+
+  return !loading ?(
     <div>
       <div>
-      <p ref={errorr}>{errorr}</p></div>
-
-        <form action="" onSubmit={submitpostcreation}>
-      <h3>Title:</h3>
-      <input type="text" required name='title' value={} onChange={handlechnage}/>
-      <h3>Content:</h3>
-      <input type="password"  required name='password' value={data.password} onChange={handlechnage}/>
-      <br/><input type="checkbox" name="" id="" onChange={togglepersist} checked={persist} />Remeber me:<br/>
-      <button type='submit' > submit</button>
-    </form>
+        <p>{error}</p>
+      </div>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="title">Title:</label>
+          <input type="text" id="title" name="title" value={post.title} onChange={handleChange} />
+        </div>
+        <div>
+          <label htmlFor="content">Content:</label>
+          <RTE name="content" value={post.content} onChange={(content) => setPost(prevPost => ({ ...prevPost, content }))} />
+        </div>
+        <div>
+          <label htmlFor="featuredImage">Featured Image:</label>
+          <input type="file" id="featuredImage" name="featuredImage" onChange={handleFileChange} />
+        </div>
+        <div>
+          <label htmlFor="isActive">isActive:</label>
+          <input type="checkbox" id="isActive" name="isActive" checked={post.isActive} onChange={handleChange} />
+        </div>
+        <button type='submit'>Submit</button>
+      </form>
     </div>
-  )
+  ) :<div className='spinner' ></div>
 }
 
-export default Postfom
+export default PostForm;
