@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Persist from '../persistent/Persist';
 import RTE from '../sections/RTE';
 import "../loader.css"
-
+import api from '../persistent/Persist'
 function Editpost() {
 
   const {postId} = useParams()
@@ -18,7 +18,6 @@ function Editpost() {
     isActive: false
   });
   const navigate = useNavigate()
-
   const api = Persist();
 
   const editpost = async () => {

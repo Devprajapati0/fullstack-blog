@@ -24,6 +24,13 @@ const generateAccessTokenRefreshToken = async(userid)=>{
  }
    
 }
+const getCurrentUser = asynhandler(async(req,res)=>{
+    return res.json(
+        new apiResponse(        200,
+            req.user,
+            "cureent user found successfully")
+    )
+})
 
 
 const registerUser = asynhandler(async (req,res)=>{
@@ -248,5 +255,6 @@ export {registerUser,
     loginUser,
     updateUser,
     logoutuser,
-    refreshAccessTokenRegenrate
+    refreshAccessTokenRegenrate,
+    getCurrentUser,
 }

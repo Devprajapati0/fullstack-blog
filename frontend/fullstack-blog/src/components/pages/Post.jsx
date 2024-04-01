@@ -5,10 +5,10 @@ import { useParams } from 'react-router-dom'
 import Container from "../post/Container"
 import { Link } from 'react-router-dom'
 import "../loader.css"
-
+import api from '../persistent/Persist'
 
 function Post() {
-    const api = Persist();
+
     const navigate = useNavigate();
     const {postId} = useParams()
     const [loading,setloading] = useState(false)
@@ -66,7 +66,7 @@ try {
                 }
             }
         fetchdata()
-    }, [postId,api,navigate])
+    }, [postId,navigate])
 
   return !loading ? (
 

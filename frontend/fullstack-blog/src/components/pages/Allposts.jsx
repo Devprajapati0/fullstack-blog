@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import Container from "../post/Container"
 import Postcard from "../post/Postcard"
-
+import api from '../persistent/Persist'
 function Allposts() {
-   const api = Persist();
+   
     const navigate = useNavigate();
     const {postId} = useParams()
     const [loading,setloading] = useState(false)

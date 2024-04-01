@@ -1,89 +1,57 @@
-import {useEffect} from 'react'
-import { useSelector,useDispatch } from 'react-redux'
-import { api } from './axiosprivate';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 import { login } from '../store/authSlice';
+import { useNavigate } from 'react-router-dom';
 
+const api = axios.create({
+  baseURL: '/api',
+  // Other axios configuration options if needed
+});
 
-function Persist() {
-    const dispatch = useDispatch();
-    const selector = useSelector((feild) => feild.auth.useAuth)
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const navigate = useNavigate();
+    const originalRequest = error.config;
 
-    useEffect(()=>{
+    // Handle 401 unauthorized errors for token refreshing
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        // Call your endpoint to refresh the access token
+        const response = await api.post('/auth/refresh-token', {}, { withCredentials: true });
 
-        const requestIntercept = api.interceptors.request.use(
-          config=>{
-            if(!config.headers['Authorization']){
-              config.headers['Authorization'] = `Bearer ${selector?.accessToken}`
-            }
-            return config;
-          },(Error)=>Promise.reject(Error)
-        );
-      
-      // Add the interceptor to handle 401 responses
-      const responseIntercept = api.interceptors.response.use(
-        (response) => response,
-        async (error) => {
-          const originalRequest = error?.config;
-      
-          // Check if the error is due to an expired access token
-          if (error?.response.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
-      
-            try {
-              // Refresh the access token
-              const {accessToken} =await generaterefreshToken()
-              console.log("new acces token is:",accessToken);
-      
-              // Update the original request with the new access token
-              originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-      
-              // Retry the original request
-              return api(originalRequest);
-            } catch (refreshError) {
-              // If refresh fails, redirect to login or handle as needed
-              console.error('Failed to refresh access token:', refreshError);
-              
-              // Redirect to login or handle the error
-            }
-          }
-      
-          return Promise.reject(error);
-        }
-      )
-      return ()=>{
-        api.interceptors.request.eject(requestIntercept)
-        api.interceptors.response.eject(responseIntercept)
+        // Update the access token in Redux store or wherever you manage authentication
+        const dispatch = useDispatch();
+        dispatch(login(response.data.accessToken));
+
+        // Retry the original request with the new access token
+        originalRequest.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        console.error('Failed to refresh access token:', refreshError);
+        // Handle refresh token failure, e.g., redirect to login page
+        navigate('/login');
       }
-       })
-      
-      
-      
-      
-  
-      const generaterefreshToken = async () => {
-        try {
-          const response = await axios.post('/api/v1/users/refreshregenerate', {}, { withCredentials: true });
-          const refreshToken = response.data.data.refreshToken;
-          const accessToken = response.data.data.accessToken;
-      
-          console.log("New AccessToken:", accessToken);
-          console.log("RefreshToken:", refreshToken);
-      
-          // Dispatch the login action with the new access token
-          dispatch(login({ accessToken: accessToken }));
-      
-          return { accessToken, refreshToken };
-        } catch (error) {
-          console.error('Failed to refresh access token:', error);
-          throw error; // Rethrow the error for handling in loginUser function
-        }
-      };
+    }
 
-      return (
-        api
-      )
-}
+    return Promise.reject(error);
+  }
+);
 
-export default Persist
+export default api;

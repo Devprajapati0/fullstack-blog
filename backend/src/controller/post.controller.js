@@ -131,12 +131,21 @@ const createPost = asynhandler(async(req, res) => {
  
    } catch (error) {
     throw error
-   }
+   } 
 }
   )
 
   const deletePost = asynhandler(async (req,res)=>{
     const {postId} = req.params;
+    if(req.user){
+        return res.status(200).json(
+            new apiResponse(
+                200,
+                null,
+                "login first"
+            )
+        )
+    }
     
     if(!postId){
         throw new apiError(400,"postID is required")
@@ -180,11 +189,12 @@ const createPost = asynhandler(async(req, res) => {
             postFound,
             "post found successfully"
         )
-    )
-
+    ) 
+ 
   })
  
   const allPostOfAllUsers = asynhandler(async (req,res)=> {
+
    const data = await Post.aggregate([
         {
             $match:{

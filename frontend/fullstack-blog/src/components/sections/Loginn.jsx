@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { login } from '../store/authSlice'
 import "../loader.css"
+import api from '../persistent/Persist'
 
 function Loginn() {
     const [errors,setError] = useState('')
@@ -15,7 +16,7 @@ function Loginn() {
     })
     const navigate = useNavigate()
     const dispatch = useDispatch();
-    const api = Persist();
+
     const loginUser = async() => {
 try {
     setError('')

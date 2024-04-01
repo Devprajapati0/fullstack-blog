@@ -3,6 +3,7 @@ import Persist from "../persistent/Persist";
 import RTE from "../sections/RTE";
 import { useNavigate } from "react-router-dom";
 import "../loader.css" 
+import api from "../persistent/Persist";
 
 function PostForm() {
   const [error, setError] = useState('');
@@ -15,7 +16,7 @@ function PostForm() {
   });
   const navigate = useNavigate()
 
-  const api = Persist();
+ 
 
   const createPost = async () => {
     try {
