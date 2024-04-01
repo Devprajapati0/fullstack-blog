@@ -9,7 +9,7 @@ import {createPost,
     getAllPosts} from "../controller/post.controller.js"
  
 const router = Router() 
- ,m,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ,
+
 router.get('/',allPostOfAllUsers)
 
 
