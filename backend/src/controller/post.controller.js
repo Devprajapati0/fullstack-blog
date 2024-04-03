@@ -137,7 +137,7 @@ const createPost = asynhandler(async(req, res) => {
 
   const deletePost = asynhandler(async (req,res)=>{
     const {postId} = req.params;
-    if(req.user){
+    if(!req.user){
         return res.status(200).json(
             new apiResponse(
                 200,

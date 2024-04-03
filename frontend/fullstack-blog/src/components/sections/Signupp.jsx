@@ -78,9 +78,6 @@ import "../loader.css"
         </div> 
         {errorq &&
          <p>{errorq}</p>}
-         {
-            loading && <h3>Loading.....</h3>
-         }
         <div>
         <form action="" onSubmit={submitregister}>
             <label htmlFor="name">Username:</label>

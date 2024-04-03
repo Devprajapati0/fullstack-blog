@@ -1,12 +1,13 @@
 import { useState,useEffect} from 'react'
-import Persist from "../persistent/Persist"
+
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import Container from "../post/Container"
 import Postcard from "../post/Postcard"
-import api from '../persistent/Persist'
+import useAuthApi from '../persistent/Persist'
 function Allposts() {
-   
+  
+  const api = useAuthApi()
     const navigate = useNavigate();
     const {postId} = useParams()
     const [loading,setloading] = useState(false)
@@ -28,7 +29,7 @@ function Allposts() {
                 }
             }
         fetchdata()
-    },[api,navigate,postId])
+    },[navigate,postId])
 
   return !loading ? (
     <div className='w-full py-8'>

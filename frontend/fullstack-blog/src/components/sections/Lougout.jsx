@@ -4,18 +4,18 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { logout } from '../store/authSlice'
 import "../loader.css"
-
+import useAuthApi from '../persistent/Persist'
 function Lougout() {
     const [loading,setloading] = useState(false)
     const [errors,setError] = useState('')
     const navigate = useNavigate()
     const dispatch = useDispatch()
-
+    const api = useAuthApi()
     const logoutuser = async() => {
    try {
       setError("")
       setloading(true)
-        const response =  await axios.get('/api/v1/users/logout',{
+        const response =  await api.get('/v1/users/logout',{
              withCredentials:true,
          })
          setError(response.data.message)

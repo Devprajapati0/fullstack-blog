@@ -3,6 +3,7 @@ import asynhandler  from "../utils/asynhandler.js"
 import apiError from "../utils/apierror.js"
 import { User } from "../model/user.model.js"
 
+
 const jwtverify = asynhandler(async(req,res,next)=>{
 try {
         const accessToken =await req.cookies?.accessToken || req.header('Authorization')?.replace("Bearer ", "")
@@ -24,12 +25,12 @@ try {
        }
        
     
-       req.user = userFound
+       req.user = userFound 
        
 
        next()
 } catch (error) {
-    throw new apiError(401,"invalid access token")
+    throw new apiError(401,error?.message || "invalid access token")
 }
 
 })

@@ -20,10 +20,10 @@ const generateAccessTokenRefreshToken = async(userid)=>{
     
        return {accessToken,refreshToken} 
  } catch (error) {
-    console.log("generateaccessandrefreshtoken::",error);
+    console.log("generateaccessandrefreshtoken::",error); 
  }
    
-}
+} 
 const getCurrentUser = asynhandler(async(req,res)=>{
     return res.json(
         new apiResponse(        200,
@@ -212,8 +212,8 @@ const refreshAccessTokenRegenrate = asynhandler(async(req,res) => {
 
     try {
         
-                const token = req.cookies.refreshToken || req.body.refreshToken
-        //  console.log(token);
+                const token = req.cookies?.refreshToken || req.body.refreshToken
+         console.log(token);
                 if(!token){
                     throw new apiError(400,"invalid haha token")
                 }
@@ -223,12 +223,12 @@ const refreshAccessTokenRegenrate = asynhandler(async(req,res) => {
                 throw apiError(400,"decode url not working")
                }
     
-                // console.log("decode:",decodedUrl)
+                 console.log("decode:",decodedUrl)
                const user =await User.findById(decodedUrl?._id)
-                // console.log("user:",user);
+                 console.log("user:",user);
         
              const {accessToken,refreshToken} =await generateAccessTokenRefreshToken(user?._id)
-            //   console.log(accessToken,refreshToken)
+               console.log(accessToken,refreshToken)
         
              const options = {
                 httpOnly:true,
@@ -239,7 +239,7 @@ const refreshAccessTokenRegenrate = asynhandler(async(req,res) => {
              .cookie("accessToken",accessToken,options)
              .json(
                 new apiResponse(
-                    200,
+                    200, 
                     {accessToken,refreshToken},
                     "Token regenerated successfully"
                 )

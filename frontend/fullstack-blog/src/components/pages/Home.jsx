@@ -5,13 +5,14 @@ import { useParams } from 'react-router-dom'
 import Container from "../post/Container"
 import Postcard from "../post/Postcard"
 import "../loader.css"
-import api from '../persistent/Persist'
+import useAuthApi from '../persistent/Persist'
 
 function Home() {
     const navigate = useNavigate();
     const {postId} = useParams()
     const [loading,setloading] = useState(false)
     const [responseData,setresponseData] = useState([])
+    const api = useAuthApi()
 
     useEffect(()=>{
       const fetchdata  =async() =>{

@@ -1,20 +1,20 @@
 import { useState,useEffect} from 'react'
-import Persist from "../persistent/Persist"
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import Container from "../post/Container"
 import { Link } from 'react-router-dom'
 import "../loader.css"
-import api from '../persistent/Persist'
-
+import useAuthApi from '../persistent/Persist'
+import parse from "html-react-parser";
 function Post() {
-
+    
     const navigate = useNavigate();
     const {postId} = useParams()
     const [loading,setloading] = useState(false)
-    const [errror,setError] = useState('login first')
+    const [errror,setError] = useState('')
     const [responseData,setresponseData] = useState({})
 
+    const api = useAuthApi()
     const deletpost = async() => {
 try {
     setError("")
@@ -68,6 +68,16 @@ try {
         fetchdata()
     }, [postId,navigate])
 
+    const renderContent = () => {
+        try {
+            return parse(responseData.content);
+        } catch (error) {
+            console.error('Error parsing content:', error);
+            return <div>Error parsing content</div>;
+        }
+    };
+
+
   return !loading ? (
 
     <div>
@@ -90,12 +100,9 @@ try {
                     <h1 className="text-2xl font-bold">{responseData.title}</h1>
                 </div>    
         <div className="browser-css">
-                    {responseData.content}
-                    </div>  
+        {renderContent()}
+        </div>  
                     
-                   
-                    
-
         <button onClick={()=>navigate('/')}>Confirm</button>           
             
 

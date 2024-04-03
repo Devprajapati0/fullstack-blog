@@ -1,9 +1,8 @@
 import { useState } from "react";
-import Persist from "../persistent/Persist";
 import RTE from "../sections/RTE";
 import { useNavigate } from "react-router-dom";
 import "../loader.css" 
-import api from "../persistent/Persist";
+import useAuthApi from '../persistent/Persist'
 
 function PostForm() {
   const [error, setError] = useState('');
@@ -15,6 +14,7 @@ function PostForm() {
     isActive: false
   });
   const navigate = useNavigate()
+  const api = useAuthApi()
 
  
 

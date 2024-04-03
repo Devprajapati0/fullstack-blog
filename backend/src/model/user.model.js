@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 
 const userSchema = new Schema({
     username:{
-        type: String,
+        type: String, 
         required: true,
         trim:true,
         index:true,
@@ -12,7 +12,7 @@ const userSchema = new Schema({
     },
     email:{
         type: String,
-        required: true,
+        required: true, 
         trim:true,
         index:true,
         unique:true

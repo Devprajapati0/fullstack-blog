@@ -1,12 +1,13 @@
 import {useState} from 'react'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
-import Persist from '../persistent/Persist';
+
 import RTE from '../sections/RTE';
 import "../loader.css"
-import api from '../persistent/Persist'
+import useAuthApi from '../persistent/Persist'
 function Editpost() {
-
+  
+  const api = useAuthApi()
   const {postId} = useParams()
 
   const [error, setError] = useState('');
@@ -18,7 +19,7 @@ function Editpost() {
     isActive: false
   });
   const navigate = useNavigate()
-  const api = Persist();
+
 
   const editpost = async () => {
     try {

@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import Persist from '../persistent/Persist'
 import { Link } from 'react-router-dom'
  import {useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { login } from '../store/authSlice'
 import "../loader.css"
-import api from '../persistent/Persist'
+import useAuthApi from '../persistent/Persist'
 
 function Loginn() {
     const [errors,setError] = useState('')
@@ -16,7 +15,8 @@ function Loginn() {
     })
     const navigate = useNavigate()
     const dispatch = useDispatch();
-
+    
+    const api = useAuthApi()
     const loginUser = async() => {
 try {
     setError('')
