@@ -177,7 +177,7 @@ const createPost = asynhandler(async(req, res) => {
         throw new apiError(400,"postID is required")
     }
 
-    const postFound =  await Post.findById(postId)
+    const postFound =  await Post.findOne({_id:postId,owner:req.user._id})
 
     if(!postFound){
         throw new apiError(400,"error while finding the post")
@@ -231,11 +231,11 @@ const createPost = asynhandler(async(req, res) => {
   
   const getAllPosts = asynhandler(async (req, res) => {
     try { // Log the user ID
-        const data = await Post.find({ isActive: true });
+        const data = await Post.find({isActive: false,owner:req.user._id });
 
         console.log("Posts found:", data); // Log the posts found
 
-        if (!data || data.length === 0) {
+        if (!data || data.length === 0) {  
             throw new apiError(404, "No posts found for the user");
         }
 
