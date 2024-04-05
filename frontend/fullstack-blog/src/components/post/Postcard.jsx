@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 
 function Postcard({
     title,
-    content,
     featuredImage,
     _id,
     username

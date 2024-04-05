@@ -17,8 +17,8 @@ const Rout = () => {
             
             <Route path="Signup" element={<Authlayout authentication={false}><Signup /></Authlayout>} />
             <Route path="Login" element={<Authlayout authentication={false}><Login /></Authlayout>} />
-            <Route element={<Persistentheader />}>
             <Route index element={<Home />} />
+            <Route element={<Persistentheader />}>
             <Route path="Addpost" element={
         
                 <Authlayout authentication><Addpost /></Authlayout>
